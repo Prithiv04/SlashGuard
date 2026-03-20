@@ -1503,139 +1503,69 @@ Tx: ${lastStake.txHash}
     async function loadPools() {
       const container = document.getElementById('poolsContainer');
       if (!container) return;
-      container.innerHTML = '<div class="spinner" style="margin:20px auto"></div>';
+      
+      let poolCards = [];
+      let tSafe = 0n, tFraud = 0n, activeCount = 0;
 
-      try {
-        const fromBlock = Math.max(0, (await readProvider.getBlockNumber()) - 10000);
-        const events = await readContract.queryFilter(readContract.filters.PoolCreated(), fromBlock);
-        const uniqueVals = [...new Set(events.map(e => e.args.validator))].slice(-10);
+      // --- Mock Data Injection for Hackathon Demo ---
+      const MOCK_POOLS = [
+        { val: "Polkadot.Alpha", tvl: 450.5, sPct: 88, safe: 412, fraud: 38.5 },
+        { val: "Lucky_Validator", tvl: 120.2, sPct: 15, safe: 18, fraud: 102.2 },
+        { val: "SecureStake_01", tvl: 85.0, sPct: 95, safe: 80.75, fraud: 4.25 }
+      ];
 
-        let poolCards = [];
-        let tSafe = 0n, tFraud = 0n, activeCount = 0;
+      for (const m of MOCK_POOLS) {
+        poolCards.push(`
+        <div class="pool-card">
+          <div class="pool-top">
+            <div><div class="pool-addr">${m.val}</div></div>
+            <div class="pool-tvl">${m.tvl} DOT</div>
+          </div>
+          <div class="bar-track">
+            <div class="bar-safe" style="width:${m.sPct}%"></div>
+            <div class="bar-fraud" style="width:${100 - m.sPct}%"></div>
+          </div>
+          <div class="bar-legend">
+            <span>Safe: ${m.safe}</span>
+            <span>Slash: ${m.fraud}</span>
+          </div>
+        </div>`);
+        activeCount++;
+        tSafe += BigInt(Math.floor(m.safe * 1e18));
+        tFraud += BigInt(Math.floor(m.fraud * 1e18));
+      }
 
-        // --- Mock Data Injection for Hackathon Demo ---
-        const MOCK_POOLS = [
-          { val: "Polkadot.Alpha", tvl: 450.5, sPct: 88, safe: 412, fraud: 38.5 },
-          { val: "Lucky_Validator", tvl: 120.2, sPct: 15, safe: 18, fraud: 102.2 },
-          { val: "SecureStake_01", tvl: 85.0, sPct: 95, safe: 80.75, fraud: 4.25 }
-        ];
-
-        for (const m of MOCK_POOLS) {
-          poolCards.push(`
-          <div class="pool-card">
-            <div class="pool-top">
-              <div><div class="pool-addr">${m.val}</div></div>
-              <div class="pool-tvl">${m.tvl} DOT</div>
-            </div>
-            <div class="bar-track">
-              <div class="bar-safe" style="width:${m.sPct}%"></div>
-              <div class="bar-fraud" style="width:${100 - m.sPct}%"></div>
-            </div>
-            <div class="bar-legend">
-              <span>Safe: ${m.safe}</span>
-              <span>Slash: ${m.fraud}</span>
-            </div>
-          </div>`);
-          activeCount++;
-          tSafe += BigInt(Math.floor(m.safe * 1e18));
-          tFraud += BigInt(Math.floor(m.fraud * 1e18));
-        }
-        // --- End Mock Data ---
-
-        for (const val of uniqueVals) {
-          const pool = await readContract.pools(val);
-          if (pool.createdAt === 0n) continue;
-
-          const isActive = pool.status === 0n || pool.status === 0;
-          if (isActive) activeCount++;
-          tSafe += pool.safeTotal; tFraud += pool.fraudTotal;
-
-          const total = pool.safeTotal + pool.fraudTotal;
-          const sPct = total > 0n ? Number((pool.safeTotal * 100n) / total) : 50;
-          const short = val.slice(0, 6) + '…' + val.slice(-4);
-
-          poolCards.push(`
-          <div class="pool-card">
-            <div class="pool-top">
-              <div><div class="pool-addr">${short}</div></div>
-              <div class="pool-tvl">${formatDot(total)} DOT</div>
-            </div>
-            <div class="bar-track">
-              <div class="bar-safe" style="width:${sPct}%"></div>
-              <div class="bar-fraud" style="width:${100 - sPct}%"></div>
-            </div>
-            <div class="bar-legend">
-              <span>Safe: ${formatDot(pool.safeTotal)}</span>
-              <span>Slash: ${formatDot(pool.fraudTotal)}</span>
-            </div>
-          </div>`);
-        }
-
-        document.getElementById('statTvl').textContent = formatDot(tSafe + tFraud) + ' DOT';
-        document.getElementById('statActive').textContent = activeCount;
-        container.innerHTML = poolCards.length ? poolCards.join('') : '<div style="padding:40px;text-align:center">No active pools found.</div>';
-      } catch (e) { console.error('Load Pools Error:', e); container.innerHTML = 'System Offline'; }
+      document.getElementById('statTvl').textContent = formatDot(tSafe + tFraud) + ' DOT';
+      document.getElementById('statActive').textContent = activeCount;
+      container.innerHTML = poolCards.length ? poolCards.join('') : '<div style="padding:40px;text-align:center">No active pools found.</div>';
     }
 
     async function loadUserClaims() {
-      if (!signer) return;
       const container = document.getElementById('claimsList');
       if (!container) return;
-      container.innerHTML = '<div class="spinner" style="margin:20px auto"></div>';
 
-      try {
-        const userAddr = (await signer.getAddress()).toLowerCase();
-        const fromBlock = Math.max(0, (await readProvider.getBlockNumber()) - 20000);
+      let claimCards = [];
 
-        // We fetch all Staked events and filter manually to avoid RPC 'null' topic errors
-        const allEvents = await readContract.queryFilter(readContract.filters.Staked(), fromBlock);
-        const userEvents = allEvents.filter(e => e.args.staker.toLowerCase() === userAddr);
-        const validators = [...new Set(userEvents.map(e => e.args.validator))];
+      // --- Mock Data Injection for Hackathon Demo ---
+      const MOCK_CLAIMS = [
+        { val: "Polkadot.Alpha", status: "Safe", amount: 15.5, won: true, claimed: false },
+        { val: "SecureStake_01", status: "Safe", amount: 5.0, won: true, claimed: true },
+        { val: "Staking_Lab", status: "Slashed", amount: 2.2, won: false, claimed: false }
+      ];
 
-        let claimCards = [];
-
-        // --- Mock Data Injection for Hackathon Demo ---
-        const MOCK_CLAIMS = [
-          { val: "Polkadot.Alpha", status: "Safe", amount: 15.5, won: true, claimed: false },
-          { val: "SecureStake_01", status: "Safe", amount: 5.0, won: true, claimed: true },
-          { val: "Staking_Lab", status: "Slashed", amount: 2.2, won: false, claimed: false }
-        ];
-
-        for (const c of MOCK_CLAIMS) {
-          claimCards.push(`
-          <div class="claim-card">
-            <div>
-              <div class="claim-addr">${c.val}</div>
-              <div class="claim-meta">${c.status} · ${c.amount} DOT staked</div>
-            </div>
-            <div>
-              ${c.won && !c.claimed ? `<button class="btn btn-success" onclick="alert('Claim Transmitted!')">Claim</button>` : `<span style="font-size:0.8rem;opacity:0.6">${c.claimed ? 'Claimed' : (c.won ? 'Won' : 'Lost')}</span>`}
-            </div>
-          </div>`);
-        }
-        // --- End Mock Data ---
-
-        for (const val of validators) {
-          const [pool, stake] = await Promise.all([readContract.pools(val), readContract.stakes(val, userAddr)]);
-          if (stake.amount === 0n) continue;
-
-          const isResolved = pool.status === 1n;
-          const won = isResolved && ((pool.slashOccurred && stake.position === 1) || (!pool.slashOccurred && stake.position === 0));
-          const status = !isResolved ? 'Pending' : (pool.slashOccurred ? 'Slashed' : 'Safe');
-
-          claimCards.push(`
-          <div class="claim-card">
-            <div>
-              <div class="claim-addr">${val.slice(0, 6)}…${val.slice(-4)}</div>
-              <div class="claim-meta">${status} · ${formatDot(stake.amount)} DOT staked</div>
-            </div>
-            <div>
-              ${won && !stake.claimed ? `<button class="btn btn-success" onclick="claimPayout(this,'${val}')">Claim</button>` : `<span style="font-size:0.8rem;opacity:0.6">${stake.claimed ? 'Claimed' : (isResolved ? 'Lost' : 'Wait…')}</span>`}
-            </div>
-          </div>`);
-        }
-        container.innerHTML = claimCards.length ? claimCards.join('') : '<div style="padding:40px;text-align:center">No positions found.</div>';
-      } catch (e) { console.error('Load Claims Error:', e); }
+      for (const c of MOCK_CLAIMS) {
+        claimCards.push(`
+        <div class="claim-card">
+          <div>
+            <div class="claim-addr">${c.val}</div>
+            <div class="claim-meta">${c.status} · ${c.amount} DOT staked</div>
+          </div>
+          <div>
+            ${c.won && !c.claimed ? `<button class="btn btn-success" onclick="alert('Claim Transmitted!')">Claim</button>` : `<span style="font-size:0.8rem;opacity:0.6">${c.claimed ? 'Claimed' : (c.won ? 'Won' : 'Lost')}</span>`}
+          </div>
+        </div>`);
+      }
+      container.innerHTML = claimCards.join('');
     }
 
     // ── 4. UI HANDLERS ────────────────────────────────────
