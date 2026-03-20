@@ -1,138 +1,201 @@
-#SlashGuard - Validator Slash Insurance on Paseo Asset Hub
+# SlashGuard — Validator Slash Insurance on Paseo Asset Hub
 
-🚨 Protects Polkadot nominators from 100% stake loss when validators get slashed ($100M+ slashed historically)
+> **First DeFi insurance layer protecting Polkadot nominators from validator slashing losses on Paseo Asset Hub**
 
-#🎯 Problem
-Polkadot nominators lose ENTIRE stake when validators:
+## 🚨 Overview
 
-Double-sign blocks (0.01%-100% slash)
+SlashGuard protects nominators from losing their staked DOT when validators are slashed due to validator misbehavior.
 
-Go 10%+ offline (exponential slashing)
+Historically, more than **$100M+ worth of stake has been slashed across Proof-of-Stake ecosystems**.
+In Polkadot, nominators can lose a significant portion or even **100% of delegated stake** when validators fail.
 
-Produce invalid blocks (up to 100% loss)
+SlashGuard introduces an **insurance-pool-based protection model** built directly on **Polkadot Virtual Machine (PVM)**.
 
-No insurance exists. SlashGuard = FIRST DeFi protection pools.
+---
 
-#🛡️ Solution
-text
+## 🎯 Problem
+
+Polkadot nominators face stake loss when validators:
+
+* Double-sign blocks
+* Stay offline beyond threshold
+* Produce invalid blocks
+
+### Slashing Impact
+
+* **Double-signing:** 0.01% → 100% slash
+* **Offline events:** exponential slashing
+* **Invalid blocks:** up to 100% stake loss
+
+There is currently **no native insurance mechanism** for nominators.
+
+---
+
+## 🛡️ Solution
+
+```text
 MetaMask Stake → PVM Contract → Insurance Pool → Slash Protection
                     ↓
 SAFE: 1.0 DOT | Claim #1 ACTIVE | Block 6609774 Confirmed
+```
 
-#🚀 Live Demo
+SlashGuard creates insurance pools that absorb slash events and protect stakers.
+
+---
+
+## 🚀 Live Demo
+
+**Live Application:**
 https://pvmshield-prithiv.vercel.app
 
-#Production Features:
+---
 
-✅ Glassmorphism UI + V3.0 RPC recovery
+## 🏗️ Tech Stack
 
-✅ Handles -32002 testnet rate limits
+### Frontend
 
-✅ Auto MetaMask Paseo Asset Hub switching
+* React 18
+* TailwindCSS
+* ethers.js v6.7.0
+* MetaMask RPC auto-switching
+* Vercel deployment
 
-✅ 9,999 DOT funded
+### Smart Contract
 
-#🏗️ Tech Stack
-text
-FRONTEND:
-├── React 18 + TailwindCSS (glassmorphism)
-├── ethers.js v6.7.0 (V3.0 resilience)
-├── MetaMask RPC switching
-└── Vercel deployment
+**Contract Address:**
+`0x736985ed65A72b1b44B572Ff75EB52Dd7d624eF9`
 
-PVM SMART CONTRACT: 0x736985ed65A72b1b44B572Ff75EB52Dd7d624eF9
-├── Solidity → Revive → RISC-V PVM bytecode
-├── stake(address,uint256,uint8) selector: 0x6ab28a9c
-├── PVM precompile → Rust staking pallet
-├── 1-block finality on Paseo Asset Hub (420420421)
-└── Block 6609774 confirmed
+* Solidity
+* Revive compiler
+* RISC-V PVM bytecode
+* Selector: `0x6ab28a9c`
+* Rust staking pallet integration
+* 1-block finality on Paseo Asset Hub
 
-BLOCKCHAIN:
-├── Paseo Asset Hub (Polkadot Testnet)
-├── Chain ID: 420420421
-└── 9,999 DOT faucet funded
-🔧 PVM Execution Flow
-text
-##graph TD
-    A[MetaMask Stake] --> B[EVM Contract<br>0x6ab28a9c]
-    B --> C[PVM Precompile<br>RISC-V Bytecode]
-    C --> D[Rust Staking Pallet]
-    D --> E[1-Block Finality<br>SAFE Pool Active]
-    
-#📊 Production Results
-Metric	Status	Proof
-Contract Deployed	✅ LIVE	0x736985ed65A72b1b44B572Ff75EB52Dd7d624eF9
-PVM Execution	✅ Confirmed	Block 6609774
-Insurance Pool	🟢 SAFE	1.0 DOT
-Claims	🔵 ACTIVE	Position #1
-RPC Resilience	✅ V3.0	-32002 recovery
-🎬 60-Second Demo
-text
-[Demo shows: Stake → PVM execution → SAFE pool → Production recovery]
+### Blockchain
 
-#Key Moments:
+* Paseo Asset Hub Testnet
+* Chain ID: `420420421`
+* 9,999 DOT funded
 
-0:06 → PVM contract verified (Remix IDE)
+---
 
-0:21 → PVM flow: EVM → RISC-V → Rust pallet
+## 🔧 PVM Execution Flow
 
-0:31 → SAFE pool dashboard (1.0 DOT)
+```text
+MetaMask Stake
+     ↓
+EVM Contract
+     ↓
+PVM Precompile
+     ↓
+RISC-V Bytecode
+     ↓
+Rust Staking Pallet
+     ↓
+1-Block Finality
+```
 
-0:41 → V3.0 handles RPC failure
+---
 
-0:51 → Subscan Block 6609774 proof
+## 📊 Production Results
 
-#🛠️ Quick Start
-bash
-# 1. Clone repo
+| Metric            | Status      | Proof                                      |
+| ----------------- | ----------- | ------------------------------------------ |
+| Contract Deployed | ✅ LIVE      | 0x736985ed65A72b1b44B572Ff75EB52Dd7d624eF9 |
+| PVM Execution     | ✅ Confirmed | Block 6609774                              |
+| Insurance Pool    | 🟢 SAFE     | 1.0 DOT                                    |
+| Claims            | 🔵 ACTIVE   | Position #1                                |
+| RPC Recovery      | ✅ V3.0      | -32002 handled                             |
+
+---
+
+## ⚡ Production Features
+
+* Glassmorphism UI
+* V3.0 RPC resilience
+* Handles MetaMask `-32002` errors
+* Auto network switching
+* Real-time pool state updates
+
+---
+
+## 🎬 Demo Highlights
+
+* PVM contract verification
+* EVM → RISC-V → Rust staking flow
+* SAFE insurance pool activation
+* RPC failure recovery
+* Block confirmation proof
+
+---
+
+## 🛠️ Quick Start
+
+```bash
 git clone https://github.com/prithiv-r/pvmshield
 cd pvmshield
-
-# 2. Install
 npm install
-
-# 3. Configure MetaMask
-# Chain ID: 420420421 (Paseo Asset Hub)
-# Fund: https://paseo-faucet.polkadot.network
-
-# 4. Run locally
 npm run dev
-🔗 Contract ABI
-text
-// Core functions
-function stake(address validator, uint256 amount, uint8 position) external
-function pools() external view returns (uint256 safe, uint256 active)
-🎖️ Hackathon Submission
-DoraHacks Polkadot Solidity Hackathon 2026 - PVM Track
+```
 
-text
-🏆 LIVE: https://pvmshield-prithiv.vercel.app
-📜 CONTRACT: 0x736985ed65A72b1b44B572Ff75EB52Dd7d624eF9
-📋 GITHUB: https://github.com/prithiv-r/pvmshield
+---
 
-✅ FIRST PVM insurance contract on Paseo Asset Hub
-✅ Block 6609774 + 9,999 DOT funded
-✅ V3.0 RPC resilience (-32002 recovery)
-✅ PVM: RISC-V → Rust staking → 1-block finality
-📈 Why SlashGuard Wins
-text
-❌ Others: "RPC down = no demo"
-✅ SlashGuard: "V3.0 recovery → Green success screen"
+## 🔗 MetaMask Configuration
 
-❌ Others: Basic dashboards
-✅ SlashGuard: Glassmorphism + PVM explainer
+### Network
 
-❌ Others: "Contract failed"
-✅ SlashGuard: "require(false) = PVM security working"
-👨‍💻 Author
-Prithiv R - Blockchain Developer (Chennai, India)
+* Chain ID: `420420421`
 
-Polkadot PVM + EVM specialist
+### Faucet
 
-Hackathon champion
+https://paseo-faucet.polkadot.network
 
-LinkedIn | GitHub
+---
 
-📄 License
-MIT License - Free to fork, deploy, improve.
+## 🔗 Contract ABI
 
+```solidity
+function stake(address validator, uint256 amount, uint8 position) external;
+function pools() external view returns (uint256 safe, uint256 active);
+```
+
+---
+
+## 🎖️ Hackathon Submission
+
+**DoraHacks Polkadot Solidity Hackathon 2026 — PVM Track**
+
+### Submission Links
+
+* Live Demo: https://pvmshield-prithiv.vercel.app
+* Contract: `0x736985ed65A72b1b44B572Ff75EB52Dd7d624eF9`
+* GitHub: https://github.com/prithiv-r/pvmshield
+
+---
+
+## 🏆 Why SlashGuard Stands Out
+
+| Others                   | SlashGuard                  |
+| ------------------------ | --------------------------- |
+| RPC failure breaks demo  | V3.0 automatic recovery     |
+| Basic dashboards         | Glassmorphism production UI |
+| Contract failure unclear | PVM security visibility     |
+
+---
+
+## 👨‍💻 Author
+
+**Prithiv R**
+Blockchain Developer
+Chennai, India
+
+* Polkadot PVM + EVM Builder
+* Hackathon Winner
+* Open Source Contributor
+
+---
+
+## 📄 License
+
+MIT License
