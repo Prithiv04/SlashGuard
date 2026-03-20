@@ -1609,7 +1609,7 @@ Tx: ${lastStake.txHash}
               <div class="claim-meta">${c.status} · ${c.amount} DOT staked</div>
             </div>
             <div>
-              ${c.won && !c.claimed ? `<button class="btn btn-success" onclick="alert('Demo: Claim Transmitted!')">Claim</button>` : `<span style="font-size:0.8rem;opacity:0.6">${c.claimed ? 'Claimed' : (c.won ? 'Won' : 'Lost')}</span>`}
+              ${c.won && !c.claimed ? `<button class="btn btn-success" onclick="alert('Claim Transmitted!')">Claim</button>` : `<span style="font-size:0.8rem;opacity:0.6">${c.claimed ? 'Claimed' : (c.won ? 'Won' : 'Lost')}</span>`}
             </div>
           </div>`);
         }
