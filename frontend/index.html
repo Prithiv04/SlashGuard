@@ -1207,11 +1207,6 @@
 
             <button class="btn btn-primary" id="stakeBtn" onclick="confirmStake()">Confirm Stake</button>
 
-      <!-- Mock Success Trigger for Demo Purposes -->
-      <button class="btn btn-ghost" onclick="showSuccess('0x' + Array(64).fill(0).map(() => Math.floor(Math.random()*16).toString(16)).join(''), document.getElementById('validatorInput').value, document.getElementById('dotAmount').value, window.selectedPosition === 'safe' ? 'SAFE' : 'SLASH')" style="margin-top:10px; font-size:0.75rem; border-color:var(--text-3); color:var(--text-3);">
-        🧪 Demo: Mock Success
-      </button>
-
       <!-- Storage Proof Card -->
             <div id="storageProof" class="storage-card" style="display: none;">
               <h4>✅ Stake Stored</h4>
@@ -1654,34 +1649,14 @@ Tx: ${lastStake.txHash}
     };
 
     async function connectWallet() {
-      if (!window.ethereum) { alert('MetaMask not found.'); return; }
-      try {
-        provider = new ethers.BrowserProvider(window.ethereum);
-        await window.ethereum.request({ method: 'wallet_switchEthereumChain', params: [{ chainId: HUB_CHAIN_ID }] }).catch(async (e) => {
-          if (e.code === 4902) await window.ethereum.request({
-            method: 'wallet_addEthereumChain',
-            params: [{
-              chainId: HUB_CHAIN_ID, chainName: 'Paseo Asset Hub', rpcUrls: [HUB_RPC],
-              nativeCurrency: { name: 'DOT', symbol: 'DOT', decimals: 18 },
-              blockExplorerUrls: ['https://paseo-asset-hub.subscan.io']
-            }]
-          });
-        });
-        await provider.send('eth_requestAccounts', []);
-        signer = await provider.getSigner();
-        contract = new ethers.Contract(CONTRACT_ADDRESS, ABI, signer);
-
-        const addr = await signer.getAddress();
-        const btn = document.getElementById('connectBtn');
-        btn.textContent = addr.slice(0, 6) + '…' + addr.slice(-4);
-        btn.classList.add('connected');
-
-        window.walletConnected = true;
-        document.getElementById('no-wallet-state').style.display = 'none';
-        document.getElementById('wallet-state').style.display = 'block';
-        loadUserClaims();
-        closeModal();
-      } catch (e) { console.error('Connect Wallet Error:', e); }
+      // Mocked connection for Demo
+      window.walletConnected = true;
+      document.getElementById('connectBtn').innerHTML = '<span>0xA19...F6E8</span>';
+      document.getElementById('connectBtn').classList.add('connected'); // Add connected class
+      document.getElementById('no-wallet-state').style.display = 'none';
+      document.getElementById('wallet-state').style.display = 'block';
+      loadUserClaims();
+      closeModal();
     }
 
     async function queryValidator() {
@@ -1719,17 +1694,6 @@ Tx: ${lastStake.txHash}
       btn.textContent = '⛏️ Sending...';
 
       try {
-        const stakeValue = ethers.parseUnits(amount.toString(), 18);
-        const feeData = await readProvider.getFeeData();
-
-        // Direct stake call - Bypassing pre-flight checks to match 'very old' successful code
-        const tx = await contract.stake(validator, window.selectedPosition === 'safe' ? 0 : 1, {
-          value: stakeValue,
-          gasLimit: 300000n,
-          maxFeePerGas: (feeData.maxFeePerGas * 130n) / 100n,
-          maxPriorityFeePerGas: (feeData.maxPriorityFeePerGas * 130n) / 100n
-        });
-
         console.log('Stake Sent:', tx.hash);
         await tx.wait();
         console.log('Stake Success:', tx.hash);
