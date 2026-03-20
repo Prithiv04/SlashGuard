@@ -46,7 +46,7 @@ SlashGuard creates insurance pools that absorb slash events and protect stakers.
 ## 🚀 Live Demo
 
 **Live Application:**
-https://pvmshield-prithiv.vercel.app
+https://frontend-m6q716fo9-shakilaprithiv9677273879-9494s-projects.vercel.app/
 
 ---
 
@@ -75,7 +75,7 @@ https://pvmshield-prithiv.vercel.app
 ### Blockchain
 
 * Paseo Asset Hub Testnet
-* Chain ID: `420420421`
+* Chain ID: `420420417`
 * 9,999 DOT funded
 
 ---
@@ -145,7 +145,7 @@ npm run dev
 
 ### Network
 
-* Chain ID: `420420421`
+* Chain ID: `420420417`
 
 ### Faucet
 
@@ -168,9 +168,8 @@ function pools() external view returns (uint256 safe, uint256 active);
 
 ### Submission Links
 
-* Live Demo: https://pvmshield-prithiv.vercel.app
+* Live Demo: https://frontend-m6q716fo9-shakilaprithiv9677273879-9494s-projects.vercel.app/
 * Contract: `0x736985ed65A72b1b44B572Ff75EB52Dd7d624eF9`
-* GitHub: https://github.com/prithiv-r/pvmshield
 
 ---
 
@@ -188,7 +187,6 @@ function pools() external view returns (uint256 safe, uint256 active);
 
 **Prithiv R**
 Blockchain Developer
-Chennai, India
 
 * Polkadot PVM + EVM Builder
 * Hackathon Winner
