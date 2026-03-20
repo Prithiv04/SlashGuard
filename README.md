@@ -1,8 +1,8 @@
-##SlashGuard - Validator Slash Insurance on Paseo Asset Hub
+#SlashGuard - Validator Slash Insurance on Paseo Asset Hub
 
 🚨 Protects Polkadot nominators from 100% stake loss when validators get slashed ($100M+ slashed historically)
 
-##🎯 Problem
+#🎯 Problem
 Polkadot nominators lose ENTIRE stake when validators:
 
 Double-sign blocks (0.01%-100% slash)
@@ -13,16 +13,16 @@ Produce invalid blocks (up to 100% loss)
 
 No insurance exists. SlashGuard = FIRST DeFi protection pools.
 
-##🛡️ Solution
+#🛡️ Solution
 text
 MetaMask Stake → PVM Contract → Insurance Pool → Slash Protection
                     ↓
 SAFE: 1.0 DOT | Claim #1 ACTIVE | Block 6609774 Confirmed
 
-##🚀 Live Demo
+#🚀 Live Demo
 https://pvmshield-prithiv.vercel.app
 
-##Production Features:
+#Production Features:
 
 ✅ Glassmorphism UI + V3.0 RPC recovery
 
@@ -32,7 +32,7 @@ https://pvmshield-prithiv.vercel.app
 
 ✅ 9,999 DOT funded
 
-##🏗️ Tech Stack
+#🏗️ Tech Stack
 text
 FRONTEND:
 ├── React 18 + TailwindCSS (glassmorphism)
@@ -59,7 +59,7 @@ text
     C --> D[Rust Staking Pallet]
     D --> E[1-Block Finality<br>SAFE Pool Active]
     
-##📊 Production Results
+#📊 Production Results
 Metric	Status	Proof
 Contract Deployed	✅ LIVE	0x736985ed65A72b1b44B572Ff75EB52Dd7d624eF9
 PVM Execution	✅ Confirmed	Block 6609774
@@ -70,7 +70,7 @@ RPC Resilience	✅ V3.0	-32002 recovery
 text
 [Demo shows: Stake → PVM execution → SAFE pool → Production recovery]
 
-##Key Moments:
+#Key Moments:
 
 0:06 → PVM contract verified (Remix IDE)
 
@@ -82,7 +82,7 @@ text
 
 0:51 → Subscan Block 6609774 proof
 
-🛠️ Quick Start
+#🛠️ Quick Start
 bash
 # 1. Clone repo
 git clone https://github.com/prithiv-r/pvmshield
